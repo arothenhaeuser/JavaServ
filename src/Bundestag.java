@@ -3,13 +3,8 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 
 public class Bundestag {
@@ -33,8 +28,6 @@ public class Bundestag {
 			System.out.println("Fehler beim Parsen der config.xml!");
 			e.printStackTrace();
 		}
-		
-		
 		//check settings
 		if(type.equals("SAX")){
 			parseSAX();
@@ -47,27 +40,12 @@ public class Bundestag {
 		}
 	}
 	private void parseDOM() {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			DocumentBuilder parser = factory.newDocumentBuilder();
-			Document doc = parser.parse(new File(file));
-			DOMHandler reader = new DOMHandler(doc, abgeordnete);
-			reader.doIt();
-		} catch (Exception e) {
-			System.out.println("DOMParser: Fehler beim Parsen der Datei!");
-			e.printStackTrace();
-		}
+		DOMHandler reader = new DOMHandler(file, abgeordnete);
+		reader.doIt();
 	}
 	private void parseSAX() {
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		try {
-			SAXParser parser = factory.newSAXParser();
-			XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(new SAXHandler(abgeordnete));
-			reader.parse(new InputSource(file));
-		} catch (Exception e) {
-			System.out.println("SAXParser: Fehler beim Parsen der Datei!");
-		}
+		SAXHandler reader = new SAXHandler(file, abgeordnete);
+		reader.doIt();
 	}
 	public boolean hasNext() {
 		if(abgeordnete.size() > currPos)

@@ -1,4 +1,8 @@
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -8,15 +12,24 @@ import org.w3c.dom.NodeList;
 
 public class DOMHandler {
 
-	Document doc = null;
+	String file = null;
 	ArrayList<Abgeordneter> abgeordnete = null;
 
-	public DOMHandler(Document doc, ArrayList<Abgeordneter> abgeordnete) {
-		this.doc = doc;
+	public DOMHandler(String file, ArrayList<Abgeordneter> abgeordnete) {
+		this.file = file;
 		this.abgeordnete = abgeordnete;
 	}
 
 	public void doIt() {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		Document doc = null;
+		try {
+			DocumentBuilder parser = factory.newDocumentBuilder();
+			doc = parser.parse(new File(file));
+		} catch (Exception e) {
+			System.out.println("DOMParser: Fehler beim Parsen der Datei!");
+			e.printStackTrace();
+		}
 		NodeList list = doc.getElementsByTagName("abgeordneter");
 		Abgeordneter abgeordneter = new Abgeordneter();
 		for(int i=0; i<list.getLength(); i++) {
